@@ -7,7 +7,7 @@ from google import genai
 from google.genai import types
 from ast import literal_eval
 
-
+#test
 load_dotenv()
 api_key = os.getenv('API_KEY')
 
