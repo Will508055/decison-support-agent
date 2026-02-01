@@ -24,11 +24,11 @@ def describe_conditions() -> dict:
     response = client.models.generate_content(
         model="gemini-3-flash-preview",
         contents=prompt,
-        config=types.GenerateContentConfig(
+        config = types.GenerateContentConfig(
             temperature=0.1,
             thinking_config=types.ThinkingConfig(thinking_level='low')
-            )
         )
+    )
     try:
         response_dict = '{' + response.text.split('{', 1)[1].split('}', 1)[0] + '}'
         response_dict = literal_eval(response_dict)
@@ -40,4 +40,25 @@ def describe_conditions() -> dict:
 
 # Describe situation from image
 def describe_scene(image: bytes) -> dict:
-
+    prompt = describe_scene_prompt
+    response = client.models.generate_content(
+        model="gemini-robotics-er-1.5-preview",
+        contents = [
+            types.Part.from_bytes(
+                data=image,
+                mime_type='image/png',
+            ),
+            prompt
+        ],
+        config = types.GenerateContentConfig(
+            temperature=0.1,
+            thinking_config=types.ThinkingConfig(thinking_budget=0)
+        )
+    )
+    try:
+        response_dict = '{' + response.text.split('{', 1)[1].split('}', 1)[0] + '}'
+        response_dict = literal_eval(response_dict)
+        return response_dict
+    except Exception as e:
+        print(f'Error parsing LLM environmental assessment: {e}')
+        return {}
