@@ -3,7 +3,7 @@ import os
 from weather import get_zip_code, get_weather_info
 from date_time import get_date_time
 from read_images import read_image_choice
-from prompts import describe_conditions_prompt
+from prompts import describe_conditions_prompt, describe_scene_prompt
 from google import genai
 from google.genai import types
 from ast import literal_eval
@@ -39,5 +39,5 @@ def describe_conditions() -> dict:
 
 
 # Describe situation from image
-#def describe_scene() -> dict:
+def describe_scene(image: bytes) -> dict:
 
