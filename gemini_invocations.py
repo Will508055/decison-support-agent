@@ -1,13 +1,18 @@
+from dotenv import load_dotenv
+import os
 from weather import get_zip_code, get_weather_info
-from api_key import get_api_key
 from read_images import read_image_choice
 from prompts import describe_situation_prompt
 from google import genai
 from google.genai import types
 from ast import literal_eval
 
+
+load_dotenv()
+api_key = os.getenv('API_KEY')
+
 def describe_situation() -> dict:
-    client = genai.Client(api_key=get_api_key())
+    client = genai.Client(api_key=api_key)
     zip_code = get_zip_code()
     weather = get_weather_info(zip_code)
     image = read_image_choice()
