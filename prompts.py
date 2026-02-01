@@ -15,3 +15,23 @@ def describe_situation_prompt(weather: dict) -> str:
     'oncoming_traffic': ['present', 'absent'] 
     }}'''
     return prompt
+
+# Describe riding conditions based on current weather, date, and time
+def describe_conditions_prompt(weather: dict, date_time: str) -> str:
+    prompt = f'''You are a motorcycle safety instructor and must assess the riding conditions given the current weather conditions. 
+    The weather conditions are: {weather}, and it is {date_time}. You will assess the situation in terms of the following: 
+    1. Road traction, considering temperature and precipitation; 
+    3. Visibility, considering precipitation, the date, and the time of day; and 
+    4. Likelihood of traffic, considering the date and time of day. 
+    You will return your response in the following Python dictionary format, 
+    only selecting one value from the list of values for each key: 
+    {{ 
+    'traction': ['grippy', 'wet', 'icy'], 
+    'visibility': ['low', 'medium', 'high'], 
+    'traffic': ['light', 'moderate', 'heavy'] 
+    }}'''
+    return prompt
+
+
+# Describe the situation based on an image of the rider's POV
+# def describe_scene_prompt() -> str:

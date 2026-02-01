@@ -1,5 +1,7 @@
 import os
 
+
+# Load the rider's POV image as bytes for the CV model input
 def read_image_choice() -> bytes:
     files_list = []
 

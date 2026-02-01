@@ -2,6 +2,8 @@ import geocoder
 from geopy.geocoders import Nominatim
 from weather_wise.weather_wise import WeatherWise
 
+
+# Get the zip code based on the device's IP address
 def get_zip_code() -> str:
     ip_loc = geocoder.ip('me')
     lat, long = ip_loc.latlng
@@ -9,6 +11,7 @@ def get_zip_code() -> str:
     location = geolocator.reverse((lat, long), language='en')
     return location.raw['address']['postcode']
 
+# Get the current weather conditions for the device's location
 def get_weather_info(zip_code: str) -> dict:
     weather = WeatherWise(zip_code)
     weather_dict = weather._get_weather_data()

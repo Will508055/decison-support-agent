@@ -1,38 +1,43 @@
 from dotenv import load_dotenv
 import os
 from weather import get_zip_code, get_weather_info
+from date_time import get_date_time
 from read_images import read_image_choice
-from prompts import describe_situation_prompt
+from prompts import describe_conditions_prompt
 from google import genai
 from google.genai import types
 from ast import literal_eval
 
-#test
+# Get prompt inputs
+zip_code = get_zip_code()
+current_weather = get_weather_info(zip_code)
+current_date_time = get_date_time()
+
+# Initialize Gemini client
 load_dotenv()
 api_key = os.getenv('API_KEY')
+client = genai.Client(api_key=api_key)
 
-def describe_situation() -> dict:
-    client = genai.Client(api_key=api_key)
-    zip_code = get_zip_code()
-    weather = get_weather_info(zip_code)
-    image = read_image_choice()
-    prompt = describe_situation_prompt(weather)
-
+# Describe current riding conditions
+def describe_conditions() -> dict:
+    prompt = describe_conditions_prompt(current_weather, current_date_time)
     response = client.models.generate_content(
-        model="gemini-robotics-er-1.5-preview",
-        contents=[
-            types.Part.from_bytes(
-                data=image,
-                mime_type='image/png',
-            ),
-            prompt
-        ],
-        config = types.GenerateContentConfig(
+        model="gemini-3-flash-preview",
+        contents=prompt,
+        config=types.GenerateContentConfig(
             temperature=0.1,
-            thinking_config=types.ThinkingConfig(thinking_budget=0)
+            thinking_config=types.ThinkingConfig(thinking_level='low')
+            )
         )
-    )
+    try:
+        response_dict = '{' + response.text.split('{', 1)[1].split('}', 1)[0] + '}'
+        response_dict = literal_eval(response_dict)
+        return response_dict
+    except Exception as e:
+        print(f'Error parsing LLM environmental assessment: {e}')
+        return {}
 
-    response_dict = '{' + response.text.split('{', 1)[1].split('}', 1)[0] + '}'
-    response_dict = literal_eval(response_dict)
-    return response_dict
+
+# Describe situation from image
+#def describe_scene() -> dict:
+
