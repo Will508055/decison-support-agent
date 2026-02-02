@@ -1,17 +1,16 @@
 import os
-from weather import get_zip_code, get_weather_info
-from date_time import get_date_time
+import weather
+import date_time
 from dotenv import load_dotenv
-from read_images import read_image_choice
-from prompts import describe_conditions_prompt, describe_scene_prompt
+import prompts
 from google import genai
 from google.genai import types
 from ast import literal_eval
 
 # Get prompt inputs
-zip_code = get_zip_code()
-current_weather = get_weather_info(zip_code)
-current_date_time = get_date_time()
+zip_code = weather.get_zip_code()
+current_weather = weather.get_weather_info(zip_code)
+current_date_time = date_time.get_date_time()
 
 # Initialize Gemini client
 load_dotenv()
@@ -20,7 +19,7 @@ client = genai.Client(api_key=api_key)
 
 # Describe current riding conditions
 async def describe_conditions() -> dict:
-    prompt = describe_conditions_prompt(current_weather, current_date_time)
+    prompt = prompts.describe_conditions_prompt(current_weather, current_date_time)
     response = client.models.generate_content(
         model="gemini-3-flash-preview",
         contents=prompt,
@@ -40,7 +39,7 @@ async def describe_conditions() -> dict:
 
 # Describe situation from image
 async def describe_scene(image: bytes) -> dict:
-    prompt = describe_scene_prompt
+    prompt = prompts.describe_scene_prompt
     response = client.models.generate_content(
         model="gemini-robotics-er-1.5-preview",
         contents = [
