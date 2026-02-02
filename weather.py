@@ -20,7 +20,7 @@ def get_zip_code() -> str:
 def get_weather_info(zip_code: str) -> dict:
     try:
         weather = WeatherWise(zip_code)
-        weather_dict = weather.get_current_conditions()
+        weather_dict = weather._get_weather_data()
         weather_dict['temperature'] = str(weather_dict['temperature']) + ' °' + weather_dict['temperature_unit']
         keys_to_remove = ['icon', 'detailed_forecast', 'temperature_unit', 'wind_direction']
         for key in keys_to_remove:
