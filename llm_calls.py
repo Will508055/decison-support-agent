@@ -17,8 +17,21 @@ load_dotenv()
 api_key = os.getenv('API_KEY')
 client = genai.Client(api_key=api_key)
 
+# Parse JSON-like response from LLM
+def parse_llm_response(response: str) -> dict[str, str]:
+    try:
+        response_dict = '{' + response.split('{', 1)[1].split('}', 1)[0] + '}'
+        response_dict = literal_eval(response_dict)
+        for key, value in response_dict.items():
+            if isinstance(value, list):
+                response_dict[key] = value[0]
+        return response_dict
+    except Exception as e:
+        print(f'Error parsing LLM response: {e}')
+        return {}
+
 # Describe current riding conditions
-async def describe_conditions() -> dict:
+async def describe_conditions() -> dict[str, str]:
     prompt = prompts.describe_conditions_prompt(current_weather, current_date_time)
     response = client.models.generate_content(
         model="gemini-3-flash-preview",
@@ -28,17 +41,11 @@ async def describe_conditions() -> dict:
             thinking_config=types.ThinkingConfig(thinking_level='low')
         )
     )
-    try:
-        response_dict = '{' + response.text.split('{', 1)[1].split('}', 1)[0] + '}'
-        response_dict = literal_eval(response_dict)
-        return response_dict
-    except Exception as e:
-        print(f'Error parsing LLM environmental assessment: {e}')
-        return {}
+    return parse_llm_response(response.text)
 
 
 # Describe situation from image
-async def describe_scene(image: bytes) -> dict:
+async def describe_scene(image: bytes) -> dict[str, str]:
     prompt = prompts.describe_scene_prompt
     response = client.models.generate_content(
         model="gemini-robotics-er-1.5-preview",
@@ -54,10 +61,4 @@ async def describe_scene(image: bytes) -> dict:
             thinking_config=types.ThinkingConfig(thinking_budget=0)
         )
     )
-    try:
-        response_dict = '{' + response.text.split('{', 1)[1].split('}', 1)[0] + '}'
-        response_dict = literal_eval(response_dict)
-        return response_dict
-    except Exception as e:
-        print(f'Error parsing LLM environmental assessment: {e}')
-        return {}
+    return parse_llm_response(response.text)
