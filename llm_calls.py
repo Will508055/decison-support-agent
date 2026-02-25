@@ -5,7 +5,6 @@ from dotenv import load_dotenv
 import prompts
 from google import genai
 from google.genai import types
-from ast import literal_eval
 
 # Get prompt inputs
 zip_code = weather.get_zip_code()
@@ -17,18 +16,6 @@ load_dotenv()
 api_key = os.getenv('API_KEY')
 client = genai.Client(api_key=api_key)
 
-# Parse JSON-like response from LLM
-def parse_llm_response(response: str) -> dict[str, str]:
-    try:
-        response_dict = '{' + response.split('{', 1)[1].split('}', 1)[0] + '}'
-        response_dict = literal_eval(response_dict)
-        for key, value in response_dict.items():
-            if isinstance(value, list):
-                response_dict[key] = value[0]
-        return response_dict
-    except Exception as e:
-        print(f'Error parsing LLM response: {e}')
-        return {}
 
 # Describe current riding conditions
 async def describe_conditions() -> dict[str, str]:
@@ -38,10 +25,13 @@ async def describe_conditions() -> dict[str, str]:
         contents=prompt,
         config = types.GenerateContentConfig(
             temperature=0.1,
-            thinking_config=types.ThinkingConfig(thinking_level='low')
+            thinking_config=types.ThinkingConfig(thinking_level='low'),
+            response_mime_type='application/json',
+            response_json_schema=prompts.ConditionsResponse.model_json_schema(),
         )
     )
-    return parse_llm_response(response.text)
+    #return parse_llm_response(response.text)
+    return prompts.ConditionsResponse.model_validate_json(response.text)
 
 
 # Describe situation from image
@@ -58,7 +48,9 @@ async def describe_scene(image: bytes) -> dict[str, str]:
         ],
         config = types.GenerateContentConfig(
             temperature=0.1,
-            thinking_config=types.ThinkingConfig(thinking_budget=0)
+            thinking_config=types.ThinkingConfig(thinking_budget=0),
+            response_mime_type='application/json',
+            response_json_schema=prompts.SceneResponse.model_json_schema(),
         )
     )
-    return parse_llm_response(response.text)
+    return prompts.SceneResponse.model_validate_json(response.text)
