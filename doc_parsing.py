@@ -5,11 +5,13 @@ from PIL import Image
 import io
 import pytesseract
 
+
 # Mapping of HTML file names to their respective class names for text extraction
 html_file_classes_map = {'Motorcycle_Night_Riding_by_Road_Guardians.html': 'infinite-content-container infinite-container',
                     'Cornering_101.html': 'post hentry uncustomized-post-template',
                     'Tips_for_Cornering.html': 'blog__article',
                     'Navigating_Blind_Turns.html': 'entry-content'}
+
 
 def list_documentation_files() -> list[str]:
     file_paths = []
@@ -24,7 +26,7 @@ def parse_html(file_path: str) -> str:
     file_name = file_path.split('\\')[-1]
     if file_name not in html_file_classes_map:
         print(f'File {file_name} not found in HTML mapping.')
-        return None
+        return ''
 
     with open(file_path, 'r', encoding='utf-8') as file:
         html_content = file.read()
@@ -45,9 +47,9 @@ def parse_pdf(file_path: str) -> str:
     return '\n'.join(text_content)
 
 
-def parse_documentation() -> list[str]:
+def parse_documentation(file_paths: list[str]) -> list[str]:
     documentation = []
-    for file_path in list_documentation_files():
+    for file_path in file_paths:
         if file_path.endswith('.html'):
             text = parse_html(file_path)
             documentation.append(text)
