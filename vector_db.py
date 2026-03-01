@@ -12,18 +12,16 @@ collection = client.get_or_create_collection(
     )
 
 
-def is_new_document(title: str) -> bool:
-    results = collection.get(
-        ids=[title]
-    )
-    
-    return len(results['ids']) == 0
+def is_new_document(file_name: str) -> bool:
+    existing_ids = collection.get()['ids']
+    title = file_name.split('.')[0]
+    return not any(doc_id.startswith(title) for doc_id in existing_ids)
 
 
 def update_vector_db():
     new_docs = [file for file in dp.list_documentation_files() if is_new_document(file.split('\\')[-1])]
     titles = [doc.split('\\')[-1] for doc in new_docs]
-    texts = dp.parse_documentation(new_docs)
+    texts = [dp.parse_document(doc) for doc in new_docs]
     try:
         for i in range(len(titles)): ### implement chunking logic
             collection.add(

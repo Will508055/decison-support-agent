@@ -26,7 +26,7 @@ def parse_html(file_path: str) -> str:
     file_name = file_path.split('\\')[-1]
     if file_name not in html_file_classes_map:
         print(f'File {file_name} not found in HTML mapping.')
-        return ''
+        return None
 
     with open(file_path, 'r', encoding='utf-8') as file:
         html_content = file.read()
@@ -47,16 +47,11 @@ def parse_pdf(file_path: str) -> str:
     return '\n'.join(text_content)
 
 
-def parse_documentation(file_paths: list[str]) -> list[str]:
-    documentation = []
-    for file_path in file_paths:
-        if file_path.endswith('.html'):
-            text = parse_html(file_path)
-            documentation.append(text)
-        elif file_path.endswith('.pdf'):
-            text = parse_pdf(file_path)
-            documentation.append(text)
-        else:
-            print(f'Unsupported file type for {file_path}')
-            continue
-    return documentation
+def parse_document(file_path: str) -> str:
+    if file_path.endswith('.html'):
+        return parse_html(file_path)
+    elif file_path.endswith('.pdf'):
+        return parse_pdf(file_path)
+    else:
+        print(f'Unsupported file type for {file_path}')
+        return None
