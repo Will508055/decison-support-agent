@@ -55,3 +55,14 @@ def parse_document(file_path: str) -> str:
     else:
         print(f'Unsupported file type for {file_path}')
         return None
+
+
+def chunk_text(text: str, chunk_size: int = 80, overlap: int = 10) -> list[str]:
+    words = text.split()
+    start_idx = 0
+    chunks = []
+    while start_idx < len(words):
+        end_idx = start_idx + chunk_size
+        chunks.append(' '.join(words[start_idx:end_idx]))
+        start_idx = end_idx - overlap
+    return chunks

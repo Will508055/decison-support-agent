@@ -20,15 +20,25 @@ def is_new_document(file_name: str) -> bool:
 
 def update_vector_db():
     new_docs = [file for file in dp.list_documentation_files() if is_new_document(file.split('\\')[-1])]
-    titles = [doc.split('\\')[-1] for doc in new_docs]
-    texts = [dp.parse_document(doc) for doc in new_docs]
-    try:
-        for i in range(len(titles)): ### implement chunking logic
+    if len(new_docs) > 0:
+        print(f'Documentation files to add: {[doc.split("\\")[-1] for doc in new_docs]}')
+    docs_to_add = {}
+    
+    for doc in new_docs:
+        title = doc.split('\\')[-1].split('.')[0]
+        text = dp.parse_document(doc)
+        if text is None:
+            print(f'Skipping {title} due to parsing issues.')
+            continue
+        docs_to_add[title] = text
+    
+    for title, text in docs_to_add.items():
+        chunks = dp.chunk_text(text)
+        for i, chunk in enumerate(chunks):
             collection.add(
-                ids=titles[i],
-                documents=texts[i]
+                ids=f'{title}_chunk_{i}',
+                documents=chunk
             )
-    except Exception as e:
-        print(f'Error adding documents to vector database: {e}')
+        print(f'Added {title} to vector database.')
     print('Vector database up-to-date.')
     return None

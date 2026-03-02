@@ -12,10 +12,10 @@ client = genai.Client(api_key=api_key)
 
 @register_embedding_function
 class GoogleEmbeddingFunction(EmbeddingFunction):
-    def __call__(self, document: str) -> Embeddings:
+    def __call__(self, chunk: str) -> Embeddings:
         embeddings = client.models.embed_content(
         model='gemini-embedding-001',
-        contents=[document],
+        contents=chunk,
         config=types.EmbedContentConfig(task_type='RETRIEVAL_QUERY')
         )
         return embeddings.embeddings[0].values
