@@ -10,7 +10,8 @@ import pytesseract
 html_file_classes_map = {'Motorcycle_Night_Riding_by_Road_Guardians.html': 'infinite-content-container infinite-container',
                     'Cornering_101.html': 'post hentry uncustomized-post-template',
                     'Tips_for_Cornering.html': 'blog__article',
-                    'Navigating_Blind_Turns.html': 'entry-content'}
+                    'Navigating_Blind_Turns.html': 'entry-content',
+                    'RevZilla_Trail_Braking.html': 'blog-article__body'}
 
 
 def list_documentation_files() -> list[str]:
