@@ -3,7 +3,6 @@ from google import genai
 from google.genai import types
 from chromadb import EmbeddingFunction, Embeddings
 from chromadb.utils.embedding_functions import register_embedding_function
-from ollama import embeddings
 
 
 api_key = os.getenv('GOOGLE_API_KEY')

@@ -2,6 +2,7 @@ import doc_parsing as dp
 import chromadb
 from chromadb.utils import embedding_functions
 import embeddings
+import prompts
 
 
 client = chromadb.PersistentClient(path='chroma_data')
@@ -42,3 +43,9 @@ def update_vector_db():
         print(f'Added {title} to vector database.')
     print('Vector database up-to-date.')
     return None
+
+
+def query_vector_db(conditions: prompts.ConditionsResponse, scene: prompts.SceneResponse, n_results: int = 5) -> str:
+    query = prompts.db_query(conditions, scene)
+    results = collection.query(query_texts=[query], n_results=n_results)
+    return ' '.join(results['documents'][0])

@@ -17,7 +17,7 @@ api_key = os.getenv('GOOGLE_API_KEY')
 client = genai.Client(api_key=api_key)
 
 
-# Describe current riding conditions
+# Describe riding conditions based on current weather, date, and time
 async def describe_conditions() -> dict[str, str]:
     prompt = prompts.describe_conditions_prompt(current_weather, current_date_time)
     response = client.models.generate_content(
@@ -34,7 +34,7 @@ async def describe_conditions() -> dict[str, str]:
     return prompts.ConditionsResponse.model_validate_json(response.text)
 
 
-# Describe situation from image
+# Describe the situation based on an image of the rider's POV
 async def describe_scene(image: bytes) -> dict[str, str]:
     prompt = prompts.describe_scene_prompt
     response = client.models.generate_content(
@@ -54,3 +54,19 @@ async def describe_scene(image: bytes) -> dict[str, str]:
         )
     )
     return prompts.SceneResponse.model_validate_json(response.text)
+
+
+# Recommend how to approach a curve based on the assessed conditions and situation
+def recommend_approach(conditions: dict[str, str], scene: dict[str, str], context: str) -> dict[str, str]:
+    prompt = prompts.recommend_approach_prompt(conditions, scene, context)
+    response = client.models.generate_content(
+        model="gemini-3-flash-preview",
+        contents=prompt,
+        config = types.GenerateContentConfig(
+            temperature=0.1,
+            thinking_config=types.ThinkingConfig(thinking_level='medium'),
+            response_mime_type='application/json',
+            response_json_schema=prompts.RecommendationResponse.model_json_schema(),
+        )
+    )
+    return prompts.RecommendationResponse.model_validate_json(response.text)
