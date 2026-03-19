@@ -1,8 +1,8 @@
-import doc_parsing as dp
+from . import doc_parsing as dp
 import chromadb
 from chromadb.utils import embedding_functions
-import embeddings
-import prompts
+from . import embeddings
+from . import prompts
 
 
 client = chromadb.PersistentClient(path='chroma_data')
