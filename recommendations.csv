@@ -1,2 +1,3 @@
 traction,visibility,traffic,curve_sharpness,curve_visibility,oncoming_traffic,entry_speed,braking,lean_angle,lane_position
 grippy,high,heavy,smooth right,obstructed near the end,present,just under speed limit,"light, increasing if needed",slight,middle
+grippy,high,moderate,smooth right,obstructed near the end,present,just under speed limit,"light, increasing if needed",slight,outside

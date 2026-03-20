@@ -3,9 +3,9 @@ from src import date_time
 from src import read_images
 from src import llm_calls
 from src import vector_db as db
-from src import doc_parsing as dp
+from src import save_recs
 import asyncio
-import csv
+
 
 async def main():
     # Get current weather information
@@ -38,9 +38,19 @@ async def main():
     print('\nGenerating final recommendation...')
     rec = llm_calls.recommend_approach(inputs[0], inputs[1], context)
 
-    ### Print recommendation
-    print(f'\nRecommendation:\n{rec}')
+    ### Print recommendation, one attribute per line
+    print('\nFINAL RECOMMENDATION:\n')
+    try:
+        rec_data = rec.model_dump()
+        for key, value in rec_data.items():
+            print(f'{key}: {value}')
+    except AttributeError:
+        print(rec)
+
     ### Ask user if they want to save the recommendation and context to a CSV file
+    print('\n')
+    save_recs.save_recs(conditions, scene, rec)
+
 
 if __name__ == "__main__":
     asyncio.run(main())
