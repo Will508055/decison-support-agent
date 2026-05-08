@@ -38,7 +38,7 @@ async def describe_conditions() -> dict[str, str]:
 async def describe_scene(image: bytes) -> dict[str, str]:
     prompt = prompts.describe_scene_prompt
     response = client.models.generate_content(
-        model="gemini-robotics-er-1.5-preview",
+        model="gemini-3-flash-preview",
         contents = [
             types.Part.from_bytes(
                 data=image,
