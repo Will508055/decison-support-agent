@@ -1,6 +1,6 @@
 from src import weather
 from src import date_time
-from src import read_images
+from backend.src import get_images
 from src import llm_calls
 from src import vector_db as db
 from src import save_recs
@@ -16,7 +16,7 @@ async def main():
     # Display weather information and prompt user to select an image
     print(f'The current weather for zip code {zip_code} at {current_date_time} is:\n{current_weather}')
     print('\nPlease select an image that depicts a plausible situation given the current weather conditions.')
-    image = read_images.read_image_choice()
+    image = get_images.display_images()
 
     # Use LLM to describe conditions and scene based on the selected image
     print('\nAnalyzing the selected image and assessing the situation...')

@@ -4,12 +4,18 @@ from PIL import Image
 import matplotlib.pyplot as plt
 
 
-def read_image_choice() -> bytes:
+def get_image_paths() -> list:
     files_list = []
 
     for root, _, files in os.walk('images'):
         for file in files:
             files_list.append(os.path.join(root, file))
+
+    return files_list
+
+
+def display_images() -> bytes:
+    files_list = get_image_paths()
     
     fig, ax = plt.subplots(nrows=math.ceil(len(files_list)/4),
                            ncols=4,
