@@ -39,7 +39,7 @@ async def get_recommendation(weather, date_time, image_path):
 
     recommendation = llm_calls.recommend_approach(inputs[0], inputs[1], context)
 
-    return recommendation
+    return conditions, scene, recommendation
 
 
 def save_recommendation(conditions, scene, recommendation):
