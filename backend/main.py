@@ -1,6 +1,6 @@
 from src import weather
 from src import date_time
-from backend.src import get_images
+from src import get_images
 from src import llm_calls
 from src import vector_db as db
 from src import save_recs
@@ -21,7 +21,7 @@ async def main():
     # Use LLM to describe conditions and scene based on the selected image
     print('\nAnalyzing the selected image and assessing the situation...')
     tasks = [
-        llm_calls.describe_conditions(),
+        llm_calls.describe_conditions(current_weather, current_date_time),
         llm_calls.describe_scene(image)
     ]
 

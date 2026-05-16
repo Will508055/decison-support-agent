@@ -18,8 +18,8 @@ client = genai.Client(api_key=api_key)
 
 
 # Describe riding conditions based on current weather, date, and time
-async def describe_conditions() -> dict[str, str]:
-    prompt = prompts.describe_conditions_prompt(current_weather, current_date_time)
+async def describe_conditions(weather: dict, date_time: str) -> dict[str, str]:
+    prompt = prompts.describe_conditions_prompt(weather, date_time)
     response = client.models.generate_content(
         model="gemini-3-flash-preview",
         contents=prompt,
